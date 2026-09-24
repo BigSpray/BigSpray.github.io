@@ -1,35 +1,29 @@
-name: Build & Deploy Hexo Blog
+name: Build & Deploy Hexo
 on:
   push:
     branches: [ main ]
 
 jobs:
-  build-deploy:
+  build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout source code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Setup Node.js 18
+      - name: Use Node.js 18
         uses: actions/setup-node@v4
         with:
           node-version: 18
 
-      - name: Switch npm mirror
-        run: |
-          npm config set registry https://registry.npmmirror.com
-          npm config get registry
+      - name: Set npm mirror
+        run: npm config set registry https://registry.npmmirror.com
 
-      - name: Install hexo globally
-        run: npm install -g hexo@7 hexo-cli
-
-      - name: Install local dependencies
+      - name: Install dependencies
         run: npm install
 
-      - name: Hexo generate static pages
-        run: hexo generate
+      - name: Hexo generate
+        run: npx hexo generate
 
-      - name: Deploy to GitHub Pages
+      - name: Deploy Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
