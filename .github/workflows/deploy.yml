@@ -7,14 +7,18 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-      - name: Use Node.js 18
+      - name: Setup Node.js 18
         uses: actions/setup-node@v4
         with:
           node-version: 18
 
-      - name: Set npm mirror
+      - name: Clear npm cache
+        run: npm cache clean --force
+
+      - name: Switch npm mirror
         run: npm config set registry https://registry.npmmirror.com
 
       - name: Install dependencies
@@ -23,7 +27,7 @@ jobs:
       - name: Hexo generate
         run: npx hexo generate
 
-      - name: Deploy Pages
+      - name: Deploy to gh-pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
